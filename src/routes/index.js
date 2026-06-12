@@ -1,6 +1,9 @@
 const config = require('../config')
 const RateLimit = require('koa2-ratelimit').RateLimit;
 const router = require('@koa/router')();
+if (config.BASE_PATH) {
+    router.prefix(config.BASE_PATH);
+}
 const { listApps, describeApp, reloadApp, restartApp, stopApp } = require('../providers/pm2/api')
 const { validateAdminUser } = require('../services/admin.service')
 const  { readLogsReverse } = require('../utils/read-logs.util')
@@ -17,7 +20,7 @@ const loginRateLimiter = RateLimit.middleware({
   });
 
 router.get('/', async (ctx) => {
-    return ctx.redirect('/login')
+    return ctx.redirect(config.BASE_PATH + '/login')
 })
 
 router.get('/login', loginRateLimiter, checkAuthentication, async (ctx) => {
@@ -29,7 +32,7 @@ router.post('/login', loginRateLimiter, checkAuthentication, async (ctx) => {
     try {
         await validateAdminUser(username, password)
         ctx.session.isAuthenticated = true;
-        return ctx.redirect('/apps')
+        return ctx.redirect(config.BASE_PATH + '/apps')
     }
     catch(err){
         return await ctx.render('auth/login', {layout : false, login: { username, password, error: err.message }})
@@ -45,7 +48,7 @@ router.get('/apps', isAuthenticated, async (ctx) => {
 
 router.get('/logout', (ctx)=>{
     ctx.session = null;
-    return ctx.redirect('/login')
+    return ctx.redirect(config.BASE_PATH + '/login')
 })
 
 router.get('/apps/:appName', isAuthenticated, async (ctx) => {
@@ -71,7 +74,7 @@ router.get('/apps/:appName', isAuthenticated, async (ctx) => {
             }
         });
     }
-    return ctx.redirect('/apps')
+    return ctx.redirect(config.BASE_PATH + '/apps')
 });
 
 router.get('/api/apps/:appName/logs/:logType', isAuthenticated, async (ctx) => {

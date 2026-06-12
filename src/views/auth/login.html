@@ -2,22 +2,22 @@
 <head>
     <title>PM2 WebUI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/jpg" href="/assets/images/app/favicon.png"/>
+    <link rel="shortcut icon" type="image/jpg" href="<%= base %>/assets/images/app/favicon.png"/>
     <script src="https://unpkg.com/@tabler/core@1.0.0-beta2/dist/js/tabler.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta2/dist/css/tabler.min.css">
 </head>
 <body>
     <div class="container-tight py-4">
     <div class="text-center mb-4">
-      <a href="."><img src="./static/logo.svg" height="36" alt=""></a>
+      <a href="<%= base %>/login"><img src="<%= base %>/assets/images/app/logo-dark.png" height="36" alt=""></a>
     </div>
-    <form class="card card-md" action="/login" method="POST" autocomplete="off">
+    <form class="card card-md" action="<%= base %>/login" method="POST" autocomplete="off">
       <div class="card-body text-center">
         <div class="mb-4">
           <h2 class="card-title">Application Login</h2>
         </div>
         <div class="mb-3">
-          <span class="avatar avatar-xl mb-3" style="background-image: url(/assets/images/app/user.svg)"></span>
+          <span class="avatar avatar-xl mb-3" style="background-image: url(<%= base %>/assets/images/app/user.svg)"></span>
         </div>
         <div class="mb-3">
           <input name="username" type="username" class="form-control text-center" placeholder="Username" value="<%= login.username %>" required>

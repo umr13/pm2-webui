@@ -35,7 +35,34 @@ app.use(session(app));
 
 app.use(koaBody());
 
-app.use(serve(path.join(__dirname, 'public')));
+// Expose the reverse-proxy base path to all templates as `base`
+app.use(async (ctx, next) => {
+    ctx.state.base = config.BASE_PATH;
+    await next();
+});
+
+// Serve static assets, accounting for the base path when behind a sub-path proxy
+const staticServe = serve(path.join(__dirname, 'public'));
+app.use(async (ctx, next) => {
+    const base = config.BASE_PATH;
+    if (!base) {
+        return staticServe(ctx, next);
+    }
+    if (ctx.path === base || ctx.path.startsWith(base + '/')) {
+        const original = ctx.path;
+        ctx.path = ctx.path.slice(base.length) || '/';
+        try {
+            await staticServe(ctx, async () => {
+                ctx.path = original; // restore before passing to the router
+                await next();
+            });
+        } finally {
+            ctx.path = original; // restore if a file was served directly
+        }
+        return;
+    }
+    return next();
+});
 
 const router = require("./routes");
 app.use(router.routes());

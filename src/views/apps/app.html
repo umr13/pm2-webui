@@ -211,7 +211,7 @@
   </div>
 </div>
 
-<script src="/assets/js/prism.js"></script>
+<script src="<%= base %>/assets/js/prism.js"></script>
 <script>
 
   function getActiveTabData(){
@@ -224,7 +224,7 @@
   
 
   async function fetchLogs(log_type, next_key){
-    const response = await fetch(`/api/apps/<%= app.name %>/logs/${log_type}${next_key?`?nextKey=${next_key}`: ''}`)
+    const response = await fetch(`<%= base %>/api/apps/<%= app.name %>/logs/${log_type}${next_key?`?nextKey=${next_key}`: ''}`)
     const data = await response.json()
     if(data && data.logs){
       return data.logs

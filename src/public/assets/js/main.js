@@ -1,4 +1,5 @@
 async function pm2AppAction(appName, action){
-    await fetch(`/api/apps/${appName}/${action}`, { method: 'POST'})
+    const base = window.BASE_PATH || '';
+    await fetch(`${base}/api/apps/${appName}/${action}`, { method: 'POST'})
     location.reload();
 }
